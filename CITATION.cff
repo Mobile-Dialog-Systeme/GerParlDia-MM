@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+title: "GerParlDia-MM: Multimodal Diachronic Bundestag Corpus"
+message: "If you use this dataset, please cite it as follows."
+type: dataset
+authors:
+  - family-names: Siegert
+    given-names: Ingo
+affiliation: Otto von Guericke University Magdeburg
+repository-code: https://github.com/Mobile-Dialog-Systeme/GerParlDia-MM
+url: https://github.com/Mobile-Dialog-Systeme/GerParlDia-MM
+license: CC-BY-4.0
+version: 1.0
+date-released: 2026-03-12
