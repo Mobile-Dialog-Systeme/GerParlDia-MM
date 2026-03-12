@@ -1,0 +1,930 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GerParlDia-MM Dataset Overview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&family=IBM+Plex+Serif:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f2ea;
+      --paper: #fffdf8;
+      --ink: #1f2430;
+      --muted: #586174;
+      --accent: #0d5a73;
+      --accent-2: #b35225;
+      --line: #d7cfbf;
+      --ok: #2f7a45;
+      --warn: #8c4e00;
+      --shadow: 0 10px 30px rgba(18, 35, 52, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      color: var(--ink);
+      font-family: "IBM Plex Sans", sans-serif;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(13, 90, 115, 0.15), transparent 42%),
+        radial-gradient(circle at 90% 0%, rgba(179, 82, 37, 0.13), transparent 36%),
+        var(--bg);
+      line-height: 1.55;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    .hero {
+      margin-top: 1rem;
+      padding: 1.5rem;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(145deg, #fdf9ef, #fcfbf7);
+      box-shadow: var(--shadow);
+      animation: fadeInUp 450ms ease;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: "IBM Plex Serif", serif;
+      margin: 0 0 0.6rem;
+      letter-spacing: 0.01em;
+    }
+
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+    }
+
+    h2 {
+      margin-top: 1.5rem;
+      font-size: clamp(1.2rem, 3vw, 1.5rem);
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .meta {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.8rem;
+    }
+
+    .chip {
+      padding: 0.75rem;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: var(--paper);
+    }
+
+    .chip strong {
+      display: block;
+      font-size: 1.1rem;
+    }
+
+    .section {
+      margin-top: 1rem;
+      padding: 1.1rem;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      animation: fadeInUp 450ms ease;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 440px;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      padding: 0.55rem 0.45rem;
+      font-size: 0.95rem;
+    }
+
+    th {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+
+    input[type="search"] {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.6rem 0.75rem;
+      min-width: 260px;
+      width: 100%;
+      max-width: 420px;
+      font: inherit;
+      background: #fff;
+    }
+
+    select {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.6rem 0.75rem;
+      font: inherit;
+      background: #fff;
+      min-width: 150px;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.6rem 0.75rem;
+      font: inherit;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #f7f2e8;
+    }
+
+    .legend {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    #speakerList {
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    details {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 0.65rem 0.8rem;
+      background: #faf7f0;
+      font-weight: 600;
+    }
+
+    .speaker-card > summary {
+      border-left: 4px solid var(--party-color, #8b909a);
+    }
+
+    .speaker-summary-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .speaker-name {
+      font-weight: 700;
+      margin-right: 0.25rem;
+    }
+
+    .party-badge,
+    .speech-count-badge,
+    .summary-meta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.78rem;
+      line-height: 1;
+      border-radius: 999px;
+      padding: 0.28rem 0.5rem;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .party-badge {
+      border-color: color-mix(in srgb, var(--party-color, #8b909a) 45%, #ffffff);
+      background: color-mix(in srgb, var(--party-color, #8b909a) 12%, #ffffff);
+    }
+
+    .party-dot {
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 50%;
+      background: var(--party-color, #8b909a);
+      display: inline-block;
+    }
+
+    .speaker-timeline {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 18px;
+      margin-top: 0.2rem;
+      max-width: 280px;
+    }
+
+    .timeline-segment {
+      width: 5px;
+      border-radius: 2px 2px 0 0;
+      background: var(--party-color, #8b909a);
+      opacity: 0.85;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .details-body {
+      padding: 0.7rem 0.85rem 0.9rem;
+    }
+
+    .kv {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 0.35rem 0.9rem;
+      margin-bottom: 0.55rem;
+      font-size: 0.92rem;
+    }
+
+    .year-badge {
+      display: inline-block;
+      font-size: 0.82rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      background: #e7f1f4;
+      color: var(--accent);
+      margin-right: 0.45rem;
+      border: 1px solid #c5dde5;
+    }
+
+    .speech-item {
+      margin: 0.5rem 0 0.7rem;
+      padding: 0.55rem 0.65rem;
+      border-left: 3px solid var(--accent-2);
+      background: #fffaf4;
+    }
+
+    .speech-links a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .speech-links a:hover {
+      text-decoration: underline;
+    }
+
+    .small {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .status {
+      margin-top: 0.35rem;
+      font-size: 0.95rem;
+      color: var(--warn);
+    }
+
+    .ok {
+      color: var(--ok);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>GerParlDia-MM: Multimodal Diachronic Bundestag Corpus</h1>
+      <p>
+        This static page summarizes a multimodal corpus of German parliamentary speeches (1949-2025), designed for
+        longitudinal research on voice, language, and rhetorical change across decades.
+      </p>
+      <div class="meta">
+        <div class="chip"><strong>75</strong><span class="muted">Long-serving speakers</span></div>
+        <div class="chip"><strong>2,136</strong><span class="muted">Speeches with media linkage</span></div>
+        <div class="chip"><strong>1949-2025</strong><span class="muted">Temporal coverage</span></div>
+        <div class="chip"><strong>Audio + Video + Text</strong><span class="muted">Multimodal setup</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Dataset In Brief</h2>
+      <p>
+        The corpus is based on official Bundestag Open Data XML metadata and persistent PoliticianID references, linked
+        where possible to OpenDiscourse speech IDs and official plenary records. Speaker selection targets long
+        careers using asymmetric thresholds to account for historical gender representation: at least eight legislative
+        terms for men and six for women.
+      </p>
+      <p>
+        The resulting set includes 75 members (43 men, 32 women), with career spans from roughly 18 to 53 years. Text
+        and media are aligned at sentence level (WhisperX-based pipeline), and speech boundaries are refined via regex
+        patterns plus LLM-assisted segmentation to remove non-speech context like announcements.
+      </p>
+      <p class="small">
+        Main research use-cases: voice aging, intra-speaker variation, diachronic political language, ASR benchmarking,
+        and speaker recognition over long timespans.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Dataset Overview</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Count</th>
+              <th>Share (%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Total speeches</td><td>2,136</td><td>100.0</td></tr>
+            <tr><td>From archive</td><td>1,443</td><td>67.4</td></tr>
+            <tr><td>From media library</td><td>698</td><td>32.6</td></tr>
+            <tr><td>With video</td><td>1,141</td><td>53.3</td></tr>
+            <tr><td>Linked to OpenDiscourse</td><td>1,951</td><td>91.2</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Legal And Ethical Considerations (Short)</h2>
+      <p>
+        The corpus uses publicly intended parliamentary materials and official metadata. Textual plenary records are
+        openly accessible under Bundestag archival rules, while audiovisual usage follows Mediathek licensing terms
+        (educational/cultural/parliamentary use, source attribution, no misleading modification).
+      </p>
+      <p>
+        Archival materials requiring additional permissions are referenced via IDs/links but not redistributed as raw
+        audiovisual files. The release focuses on transparency, traceability, and legal compliance, and contains no
+        private personal data.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Data Availability Statement</h2>
+      <p>
+        The dataset release can provide structured JSON metadata including speaker-level information, speech-level
+        records, complete transcripts, and persistent links or identifiers to OpenDiscourse entries, Bundestag
+        Mediathek media, archival signatures, and PDF plenary protocols.
+      </p>
+      <p>
+        Audiovisual media files are not redistributed in the core release. Access to original recordings follows the
+        official Bundestag Mediathek and Parliamentary Archive usage terms.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Citation Statement (Sample)</h2>
+      <p class="small">
+        Final bibliographic details will be updated after presentation/publication at LREC.
+      </p>
+      <p>
+        <strong>Suggested citation (temporary):</strong><br>
+        Authors. 2026. <em>GerParlDia-MM: A Multimodal Diachronic Corpus of German Parliamentary Debates (1949-2025)</em>.
+        Dataset and documentation, to appear in LREC 2026 proceedings.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Speakers And Speeches</h2>
+      <div class="toolbar">
+        <input id="speakerSearch" type="search" placeholder="Filter by speaker, party, year, source..." aria-label="Filter speakers">
+        <select id="genderFilter" aria-label="Filter by gender">
+          <option value="">All genders</option>
+        </select>
+        <select id="partyFilter" aria-label="Filter by party">
+          <option value="">All parties</option>
+        </select>
+        <select id="termFilter" aria-label="Filter by legislative period">
+          <option value="">All legislative periods</option>
+        </select>
+        <select id="mediaTypeFilter" aria-label="Filter by media type">
+          <option value="">All media types</option>
+          <option value="audio">Audio</option>
+          <option value="video">Video</option>
+        </select>
+        <select id="yearFilter" aria-label="Filter by year">
+          <option value="">All years</option>
+        </select>
+        <select id="sortFilter" aria-label="Sort speakers">
+          <option value="name_asc">Sort: Name (A-Z)</option>
+          <option value="speeches_desc">Sort: Most speeches</option>
+          <option value="latest_year_desc">Sort: Latest year</option>
+        </select>
+        <button id="resetFilters" type="button">Reset filters</button>
+        <span id="speakerCount" class="legend"></span>
+      </div>
+      <div id="status" class="status">Loading data...</div>
+      <div id="speakerList"></div>
+    </section>
+  </main>
+
+  <script>
+    const statusEl = document.getElementById("status");
+    const speakerListEl = document.getElementById("speakerList");
+    const speakerSearchEl = document.getElementById("speakerSearch");
+    const speakerCountEl = document.getElementById("speakerCount");
+    const genderFilterEl = document.getElementById("genderFilter");
+    const partyFilterEl = document.getElementById("partyFilter");
+    const termFilterEl = document.getElementById("termFilter");
+    const mediaTypeFilterEl = document.getElementById("mediaTypeFilter");
+    const yearFilterEl = document.getElementById("yearFilter");
+    const sortFilterEl = document.getElementById("sortFilter");
+    const resetFiltersEl = document.getElementById("resetFilters");
+
+    const PARTY_COLORS = {
+      "SPD": "#c62828",
+      "CDU": "#111111",
+      "CSU": "#0d47a1",
+      "FDP": "#f9a825",
+      "BÜNDNIS 90/DIE GRÜNEN": "#2e7d32",
+      "DIE LINKE": "#e20074",
+      "DIE LINKE.": "#e20074",
+      "fraktionslos": "#546e7a",
+      "N/A": "#8b909a"
+    };
+
+    function textNode(tag, text, className) {
+      const el = document.createElement(tag);
+      if (className) {
+        el.className = className;
+      }
+      el.textContent = text;
+      return el;
+    }
+
+    function kvLine(label, value) {
+      const row = document.createElement("div");
+      row.textContent = `${label}: ${value || "-"}`;
+      return row;
+    }
+
+    function asArrayYearEntries(entries) {
+      return Array.isArray(entries) ? entries : [];
+    }
+
+    function isPlaceholderOnlySpeech(speechObj) {
+      if (!speechObj || typeof speechObj !== "object") {
+        return true;
+      }
+
+      const keys = Object.keys(speechObj);
+      if (keys.length === 0) {
+        return true;
+      }
+
+      // No-entry items are stored as a single placeholder field.
+      if (keys.length === 1 && keys[0] === "data_source") {
+        const val = String(speechObj.data_source || "").toLowerCase();
+        return val.includes("kein eintrag vorhanden") || val.includes("no entry available");
+      }
+
+      return false;
+    }
+
+    function speechMediaType(speechObj) {
+      const extension = String(speechObj.media_extension || "").toLowerCase();
+      const hasVideoSignals = Boolean(
+        speechObj.video_codec || speechObj.video_resolution || speechObj.video_bitrate
+      ) || ["mp4", "mkv", "webm"].includes(extension);
+
+      if (hasVideoSignals) {
+        return "video";
+      }
+      return "audio";
+    }
+
+    function addOptions(selectEl, values) {
+      for (const value of values) {
+        const opt = document.createElement("option");
+        opt.value = value;
+        opt.textContent = value;
+        selectEl.appendChild(opt);
+      }
+    }
+
+    function normalizeYearValue(value) {
+      const text = String(value || "").trim();
+      return text || "Unknown";
+    }
+
+    function toYearNumber(value) {
+      const n = Number.parseInt(String(value || ""), 10);
+      return Number.isFinite(n) ? n : Number.NEGATIVE_INFINITY;
+    }
+
+    function partyColor(party) {
+      const key = String(party || "N/A").trim().toUpperCase();
+      if (key === "B90/GRÜNE" || key === "GRÜNE") {
+        return PARTY_COLORS["BÜNDNIS 90/DIE GRÜNEN"];
+      }
+      if (key === "N/A") {
+        return PARTY_COLORS["N/A"];
+      }
+      return PARTY_COLORS[key] || PARTY_COLORS["N/A"];
+    }
+
+    function getRealSpeechesFromYear(yearEntry) {
+      const speeches = Array.isArray(yearEntry.speeches)
+        ? yearEntry.speeches
+        : (yearEntry.speech ? [yearEntry.speech] : []);
+      return speeches.filter(s => !isPlaceholderOnlySpeech(s));
+    }
+
+    function createSpeechBlock(speechObj) {
+      const block = document.createElement("div");
+      block.className = "speech-item";
+
+      const grid = document.createElement("div");
+      grid.className = "kv";
+
+      const fields = [
+        ["Legislative period", speechObj.legislative_period],
+        ["Date", speechObj.date],
+        ["Speech date", speechObj.speech_date],
+        ["Start time", speechObj.speech_start_time],
+        ["Duration", speechObj.speech_duration],
+        ["Data source", speechObj.data_source],
+        ["Media reference", speechObj.media_reference],
+        ["Media extension", speechObj.media_extension],
+        ["Audio codec", speechObj.audio_codec],
+        ["Video codec", speechObj.video_codec],
+        ["Video resolution", speechObj.video_resolution],
+        ["Video bitrate", speechObj.video_bitrate],
+        ["Audio bitrate", speechObj.audio_bitrate],
+        ["OpenDiscourse transcript ID", speechObj.opendiscourse_transcript_id]
+      ];
+
+      for (const [label, value] of fields) {
+        grid.appendChild(kvLine(label, value));
+      }
+      block.appendChild(grid);
+
+      if (speechObj.plenary_record_link) {
+        const links = document.createElement("div");
+        links.className = "speech-links";
+        const link = document.createElement("a");
+        link.href = speechObj.plenary_record_link;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = "Plenary record";
+        links.appendChild(link);
+        block.appendChild(links);
+      }
+
+      if (speechObj.transcript) {
+        const transcriptDetails = document.createElement("details");
+        const summary = textNode("summary", "Transcript excerpt");
+        const p = textNode("p", speechObj.transcript, "small");
+        const body = document.createElement("div");
+        body.className = "details-body";
+        body.appendChild(p);
+        transcriptDetails.appendChild(summary);
+        transcriptDetails.appendChild(body);
+        block.appendChild(transcriptDetails);
+      }
+
+      return block;
+    }
+
+    function buildSpeakerCard(name, personData, personMeta, visibleYearEntries, speechCount, latestYear) {
+      const details = document.createElement("details");
+      details.className = "speaker-card";
+      const summary = document.createElement("summary");
+
+      const party = personMeta?.political_party || "n/a";
+      const years = visibleYearEntries;
+      const color = partyColor(String(party).toUpperCase() === "N/A" ? "N/A" : party);
+      details.style.setProperty("--party-color", color);
+
+      const topLine = document.createElement("div");
+      topLine.className = "speaker-summary-top";
+
+      const nameEl = document.createElement("span");
+      nameEl.className = "speaker-name";
+      nameEl.textContent = name;
+      topLine.appendChild(nameEl);
+
+      const partyBadge = document.createElement("span");
+      partyBadge.className = "party-badge";
+      const partyDot = document.createElement("span");
+      partyDot.className = "party-dot";
+      partyBadge.appendChild(partyDot);
+      partyBadge.appendChild(document.createTextNode(party));
+      topLine.appendChild(partyBadge);
+
+      const speechBadge = document.createElement("span");
+      speechBadge.className = "speech-count-badge";
+      speechBadge.textContent = `${speechCount} speeches`;
+      topLine.appendChild(speechBadge);
+
+      const yearBadge = document.createElement("span");
+      yearBadge.className = "summary-meta-badge";
+      yearBadge.textContent = `${years.length} year blocks`;
+      topLine.appendChild(yearBadge);
+
+      const latestYearBadge = document.createElement("span");
+      latestYearBadge.className = "summary-meta-badge";
+      latestYearBadge.textContent = `latest: ${latestYear > 0 ? latestYear : "n/a"}`;
+      topLine.appendChild(latestYearBadge);
+
+      summary.appendChild(topLine);
+
+      const timeline = document.createElement("div");
+      timeline.className = "speaker-timeline";
+      const maxPerYear = Math.max(1, ...years.map(y => y.speeches.length));
+      for (const y of years) {
+        const seg = document.createElement("span");
+        seg.className = "timeline-segment";
+        const h = 5 + Math.round((y.speeches.length / maxPerYear) * 11);
+        seg.style.height = `${h}px`;
+        seg.title = `${y.year}: ${y.speeches.length} speech item(s)`;
+        timeline.appendChild(seg);
+      }
+      summary.appendChild(timeline);
+
+      details.appendChild(summary);
+
+      const body = document.createElement("div");
+      body.className = "details-body";
+
+      const metaGrid = document.createElement("div");
+      metaGrid.className = "kv";
+      metaGrid.appendChild(kvLine("Person ID", personData.person_id));
+      metaGrid.appendChild(kvLine("Gender", personMeta?.gender || "-"));
+      metaGrid.appendChild(kvLine("Birth date", personMeta?.birth_date || "-"));
+      metaGrid.appendChild(kvLine("Profession", personMeta?.profession || "-"));
+      metaGrid.appendChild(kvLine("Political party", party));
+      body.appendChild(metaGrid);
+
+      for (const y of years) {
+        const yearDetails = document.createElement("details");
+        const yearSummary = document.createElement("summary");
+
+        const speeches = y.speeches;
+
+        yearSummary.innerHTML = `<span class="year-badge">${y.year || "Unknown"}</span> ${speeches.length} speech item(s)`;
+        yearDetails.appendChild(yearSummary);
+
+        const yearBody = document.createElement("div");
+        yearBody.className = "details-body";
+
+        for (const speech of speeches) {
+          yearBody.appendChild(createSpeechBlock(speech));
+        }
+
+        yearDetails.appendChild(yearBody);
+        body.appendChild(yearDetails);
+      }
+
+      details.appendChild(body);
+      return details;
+    }
+
+    function speakerMetaByName(personDataList) {
+      const map = new Map();
+      for (const entry of personDataList || []) {
+        if (entry && entry.name) {
+          map.set(entry.name, entry);
+        }
+      }
+      return map;
+    }
+
+    function renderCards(cards) {
+      speakerListEl.innerHTML = "";
+      for (const card of cards) {
+        speakerListEl.appendChild(card);
+      }
+      speakerCountEl.textContent = `${cards.length} speaker(s) shown`;
+    }
+
+    function getActiveFilters() {
+      return {
+        query: speakerSearchEl.value.trim().toLowerCase(),
+        gender: genderFilterEl.value,
+        party: partyFilterEl.value,
+        legislativePeriod: termFilterEl.value,
+        mediaType: mediaTypeFilterEl.value,
+        year: yearFilterEl.value,
+        sort: sortFilterEl.value
+      };
+    }
+
+    function speechMatchesFilters(speech, year, filters) {
+      if (filters.year && normalizeYearValue(year) !== filters.year) {
+        return false;
+      }
+      if (filters.legislativePeriod && String(speech.legislative_period || "") !== filters.legislativePeriod) {
+        return false;
+      }
+      if (filters.mediaType && speechMediaType(speech) !== filters.mediaType) {
+        return false;
+      }
+      return true;
+    }
+
+    async function loadPageData() {
+      try {
+        const [datasetRes, personRes] = await Promise.all([
+          fetch("./Dataset.json"),
+          fetch("./Person_data.json")
+        ]);
+
+        if (!datasetRes.ok || !personRes.ok) {
+          throw new Error("Could not load required JSON files.");
+        }
+
+        const dataset = await datasetRes.json();
+        const personData = await personRes.json();
+
+        const people = dataset.people || {};
+        const personMeta = speakerMetaByName(personData);
+
+        const speakerRecords = [];
+        const genders = new Set();
+        const parties = new Set();
+        const terms = new Set();
+        const years = new Set();
+
+        for (const [name, info] of Object.entries(people)) {
+          const meta = personMeta.get(name);
+          const yearEntries = [];
+
+          for (const y of asArrayYearEntries(info.entries)) {
+            const realSpeeches = getRealSpeechesFromYear(y);
+            if (realSpeeches.length === 0) {
+              continue;
+            }
+
+            const year = normalizeYearValue(y.year);
+            years.add(year);
+
+            for (const s of realSpeeches) {
+              if (s.legislative_period) {
+                terms.add(String(s.legislative_period));
+              }
+            }
+
+            yearEntries.push({ year, speeches: realSpeeches });
+          }
+
+          if (meta?.gender) {
+            genders.add(meta.gender);
+          }
+          if (meta?.political_party) {
+            parties.add(meta.political_party);
+          }
+
+          const words = [name, meta?.political_party || "", meta?.gender || ""];
+          for (const y of yearEntries) {
+            words.push(y.year);
+            for (const s of y.speeches) {
+              words.push(
+                s.data_source || "",
+                s.media_reference || "",
+                s.legislative_period || "",
+                speechMediaType(s)
+              );
+            }
+          }
+
+          speakerRecords.push({
+            name,
+            info,
+            meta,
+            yearEntries,
+            searchText: words.join(" ").toLowerCase()
+          });
+        }
+
+        addOptions(genderFilterEl, Array.from(genders).sort((a, b) => String(a).localeCompare(String(b))));
+        addOptions(partyFilterEl, Array.from(parties).sort((a, b) => String(a).localeCompare(String(b))));
+        addOptions(termFilterEl, Array.from(terms).sort((a, b) => Number(a) - Number(b)));
+        addOptions(yearFilterEl, Array.from(years).sort((a, b) => String(a).localeCompare(String(b))));
+
+        function applyAllFilters() {
+          const filters = getActiveFilters();
+          const visibleRecords = [];
+
+          for (const rec of speakerRecords) {
+            if (filters.query && !rec.searchText.includes(filters.query)) {
+              continue;
+            }
+            if (filters.gender && String(rec.meta?.gender || "") !== filters.gender) {
+              continue;
+            }
+            if (filters.party && String(rec.meta?.political_party || "") !== filters.party) {
+              continue;
+            }
+
+            const visibleYearEntries = [];
+            for (const y of rec.yearEntries) {
+              const speeches = y.speeches.filter(s => speechMatchesFilters(s, y.year, filters));
+              if (speeches.length > 0) {
+                visibleYearEntries.push({ year: y.year, speeches });
+              }
+            }
+
+            if (visibleYearEntries.length === 0) {
+              continue;
+            }
+
+            const speechCount = visibleYearEntries.reduce((sum, item) => sum + item.speeches.length, 0);
+            const latestYear = Math.max(...visibleYearEntries.map(item => toYearNumber(item.year)));
+
+            visibleRecords.push({
+              name: rec.name,
+              info: rec.info,
+              meta: rec.meta,
+              visibleYearEntries,
+              speechCount,
+              latestYear
+            });
+          }
+
+          if (filters.sort === "speeches_desc") {
+            visibleRecords.sort((a, b) => b.speechCount - a.speechCount || a.name.localeCompare(b.name));
+          } else if (filters.sort === "latest_year_desc") {
+            visibleRecords.sort((a, b) => b.latestYear - a.latestYear || a.name.localeCompare(b.name));
+          } else {
+            visibleRecords.sort((a, b) => a.name.localeCompare(b.name));
+          }
+
+          const visibleCards = visibleRecords.map(rec =>
+            buildSpeakerCard(rec.name, rec.info, rec.meta, rec.visibleYearEntries, rec.speechCount, rec.latestYear)
+          );
+
+          renderCards(visibleCards);
+        }
+
+        applyAllFilters();
+
+        for (const el of [speakerSearchEl, genderFilterEl, partyFilterEl, termFilterEl, mediaTypeFilterEl, yearFilterEl, sortFilterEl]) {
+          el.addEventListener("input", applyAllFilters);
+          el.addEventListener("change", applyAllFilters);
+        }
+
+        resetFiltersEl.addEventListener("click", () => {
+          speakerSearchEl.value = "";
+          genderFilterEl.value = "";
+          partyFilterEl.value = "";
+          termFilterEl.value = "";
+          mediaTypeFilterEl.value = "";
+          yearFilterEl.value = "";
+          sortFilterEl.value = "name_asc";
+          applyAllFilters();
+        });
+
+        statusEl.textContent = `Loaded ${Object.keys(people).length} speakers.`;
+        statusEl.classList.add("ok");
+      } catch (err) {
+        const baseMessage = `Failed to load dataset files: ${err.message}`;
+        if (window.location.protocol === "file:") {
+          statusEl.textContent = `${baseMessage} Open this page via a local web server or GitHub Pages (not directly via file://).`;
+        } else {
+          statusEl.textContent = baseMessage;
+        }
+        statusEl.classList.remove("ok");
+      }
+    }
+
+    loadPageData();
+  </script>
+</body>
+</html>
